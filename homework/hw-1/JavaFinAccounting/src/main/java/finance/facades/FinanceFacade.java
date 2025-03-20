@@ -3,7 +3,6 @@ package finance.facades;
 import finance.domains.BankAccount;
 import finance.domains.Category;
 import finance.domains.Operation;
-import finance.interfaces.IExportable;
 import finance.services.*;
 
 import java.time.LocalDate;
