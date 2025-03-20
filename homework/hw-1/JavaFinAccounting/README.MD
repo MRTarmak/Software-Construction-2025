@@ -15,7 +15,8 @@ java -jar build\libs\JavaFinAccounting-1.0-SNAPSHOT.jar
 ```create category [type] [name]``` - creates new category (type: income (i) /expenses (e))
 
 ```create operation [type] [amount] [date] [bankAccountId] [categoryId] [description]``` - creates new operation
-(type: income (i) /expense (e)), description is optional
+(type: income (i) /expense (e)), description is optional, in date type "now" (for current date) or yyyy-mm-dd. 
+BankAccountId and categoryId can be found with get command.
 
 ```update account [id] [name] [balance]``` - updates account with given id
 
@@ -34,15 +35,16 @@ with given id
 
 ```get categories``` - displays all categories
 
-```get operation``` - displays all operations
+```get operations``` - displays all operations
 
-```export csv [accountsFileName] [categoriesFileName] [operationsFileName]``` - exports to csv (filenames without .csv)
+```export csv [accountsFileName] [categoriesFileName] [operationsFileName]``` - exports to csv 
+(filenames without .csv). Files can be found in export directory.
 
 ```export yaml [accountsFileName] [categoriesFileName] [operationsFileName]``` - exports to yaml 
-(filenames without .yaml)
+(filenames without .yaml). Files can be found in export directory.
 
 ```export json [accountsFileName] [categoriesFileName] [operationsFileName]```  - exports to json 
-(filenames without .json)
+(filenames without .json). Files can be found in export directory.
 
 ```import csv [filePath]``` - imports from csv
 
