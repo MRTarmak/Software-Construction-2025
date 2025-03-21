@@ -74,7 +74,7 @@ public class CommandParser {
                 return new CreateAccountCommand(financeFacade, name, balance);
 
             case "update account":
-                if (parts.length != 4) {
+                if (parts.length != 5) {
                     throw new IllegalArgumentException("Expected 3 arguments, got " + (parts.length - 2));
                 }
 
