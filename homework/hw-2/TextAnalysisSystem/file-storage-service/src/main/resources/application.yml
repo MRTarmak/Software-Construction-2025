@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  use-forward-headers: true
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name:
+      file-storage-service
+
+  datasource:
+    url: jdbc:postgresql://postgres_storage:5432/file-storage
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+springdoc:
+  servers:
+    - url: http://localhost:8080/file-storage-service
+      description: File Storage Service Local
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/

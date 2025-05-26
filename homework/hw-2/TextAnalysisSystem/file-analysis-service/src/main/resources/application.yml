@@ -1,0 +1,49 @@
+server:
+  port: 8080
+  use-forward-headers: true
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name:
+      file-analysis-service
+
+  datasource:
+    url: jdbc:postgresql://postgres_analysis:5432/file-analysis
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    schemas: public
+
+springdoc:
+  servers:
+    - url: http://localhost:8080/file-analysis-service
+      description: File Analysis Service Local
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
