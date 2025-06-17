@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: payments-service-route
+          uri: http://payments-service:8080
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - RewritePath=/api/accounts/(?<segment>.*), /${segment}
+
+        - id: orders-service-route
+          uri: http://orders-service:8080
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - RewritePath=/api/orders/(?<segment>.*), /${segment}
+
+        - id: payments-service-openapi
+          uri: http://payments-service:8080
+          predicates:
+            - Path=/api/accounts/v3/api-docs
+          filters:
+            - RewritePath=/api/accounts/v3/api-docs, /v3/api-docs
+
+        - id: orders-service-openapi
+          uri: http://orders-service:8080
+          predicates:
+            - Path=/api/orders/v3/api-docs
+          filters:
+            - RewritePath=/api/orders/v3/api-docs, /v3/api-docs
+    discovery:
+      locator:
+        enabled: true
+        lower-case-service-id: true
+    globalcors:
+      corsConfigurations:
+        '[/**]':
+          allowedOrigins: "*"
+          allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          allowedHeaders: "*"
+
+springdoc:
+  servers:
+    - url: http://localhost:8080
+      description: API Gateway
+  use-management-port: false
+  api-docs:
+    enabled: true
+    groups:
+      enabled: true
+  swagger-ui:
+    urls:
+      - name: Payments Service API
+        url: /api/accounts/v3/api-docs
+      - name: Orders Service API
+        url: /api/orders/v3/api-docs
+  cache:
+    disabled: true
