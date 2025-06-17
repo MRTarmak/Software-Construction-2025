@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  payments-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: payment-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+
+  orders-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: order-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - orders_data:/var/lib/postgresql/data
+
+  api-gateway:
+    build:
+      context:
+        ./api-gateway
+      dockerfile:
+        Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      payments-service:
+        condition: service_started
+      orders-service:
+        condition: service_started
+
+  payments-service:
+    build:
+      context:
+        ./payments-service
+      dockerfile:
+        Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - payments-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payments-db:5432/payment-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+
+  orders-service:
+    build:
+      context:
+        ./orders-service
+      dockerfile:
+        Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      - orders-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/order-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.3
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.3
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+volumes:
+  payment_data:
+  orders_data:
